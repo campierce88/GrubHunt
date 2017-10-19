@@ -1,0 +1,6 @@
+framework module Pods_GrubHunt {
+  umbrella header "Pods-GrubHunt-umbrella.h"
+
+  export *
+  module * { export * }
+}

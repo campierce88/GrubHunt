@@ -1,0 +1,10 @@
+Here is a list of things I would add to this app if I had more time to work on it:
+
+- I would add unit tests to the entire app.
+- Add the location of the business, phone number, and the hours of operation to the BusinessDetailsViewController.
+- If you have already searched a result, then clicking the search bar again would present a TableView from the top with a custom animation listing all the recent searches. Clicking any of these cells would dismiss this search TableView and update the below CollectionView with the cached results of that search. This TableView would have a alpha transparency with a slight blur so you could kind of make out the table under it.
+- I would add a feature that would enable AutoSearch while you are typing. This would not happen with every keystroke but instead have a time dealy on the typing so that you are not spamming the Yelp API.
+- Add a review details view that could display the full review and some information about the User that left said review.
+- Serialize the location each search term was made at and then on location update, if the location is further than .1 miles I would prevent the resuming of paginated requests for that search term.
+- I would tidy up the insertion and deletion of elements for the TableView and CollectionView's.
+- Add a cleaner style to the app as well as some icons and an AppIcon.

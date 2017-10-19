@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="13196" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13173"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" restorationIdentifier="SearchResultCollectionViewCell" reuseIdentifier="SearchResultCollectionViewCell" id="iMD-67-cge" customClass="SearchResultCollectionViewCell" customModule="Versus" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="165" height="225"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="165" height="225"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vmj-Rn-iAX">
+                        <rect key="frame" x="0.0" y="0.0" width="165" height="225"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Tzt-s8-hnl">
+                                <rect key="frame" x="0.0" y="0.0" width="165" height="225"/>
+                                <subviews>
+                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" tag="1" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="riA-xa-JSd">
+                                        <rect key="frame" x="0.0" y="0.0" width="165" height="165"/>
+                                        <color key="backgroundColor" red="0.85490196080000003" green="0.85098039219999999" blue="0.85098039219999999" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="riA-xa-JSd" secondAttribute="height" multiplier="1:1" id="lA6-Dh-oze"/>
+                                        </constraints>
+                                    </imageView>
+                                    <view userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="TeY-bC-inj" customClass="HCSStarRatingView">
+                                        <rect key="frame" x="32.5" y="165" width="100" height="35"/>
+                                        <color key="tintColor" red="0.94901960780000005" green="0.71764705880000002" blue="0.031372549020000001" alpha="1" colorSpace="calibratedRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="100" id="LkT-95-O9b"/>
+                                            <constraint firstAttribute="height" constant="35" id="hEe-dM-9IK"/>
+                                        </constraints>
+                                        <userDefinedRuntimeAttributes>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="maximumValue">
+                                                <integer key="value" value="5"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="minimumValue">
+                                                <real key="value" value="0.0"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="value">
+                                                <real key="value" value="0.0"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="boolean" keyPath="allowsHalfStars" value="YES"/>
+                                            <userDefinedRuntimeAttribute type="color" keyPath="starBorderColor">
+                                                <color key="value" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                            </userDefinedRuntimeAttribute>
+                                            <userDefinedRuntimeAttribute type="number" keyPath="starBorderWidth">
+                                                <real key="value" value="1"/>
+                                            </userDefinedRuntimeAttribute>
+                                        </userDefinedRuntimeAttributes>
+                                    </view>
+                                    <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="name" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xgy-Nc-TyM">
+                                        <rect key="frame" x="63.5" y="200" width="38" height="25"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="14"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="Tzt-s8-hnl" firstAttribute="top" secondItem="vmj-Rn-iAX" secondAttribute="top" id="CVZ-l1-Lf1"/>
+                            <constraint firstAttribute="trailing" secondItem="Tzt-s8-hnl" secondAttribute="trailing" id="LCr-Zk-0Tu"/>
+                            <constraint firstItem="Tzt-s8-hnl" firstAttribute="leading" secondItem="vmj-Rn-iAX" secondAttribute="leading" id="Lss-1u-BEb"/>
+                            <constraint firstAttribute="bottom" secondItem="Tzt-s8-hnl" secondAttribute="bottom" id="amM-VY-a3r"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="vmj-Rn-iAX" firstAttribute="top" secondItem="iMD-67-cge" secondAttribute="top" id="7OJ-HR-Oko"/>
+                <constraint firstAttribute="bottom" secondItem="vmj-Rn-iAX" secondAttribute="bottom" id="Oht-Ux-ziR"/>
+                <constraint firstAttribute="trailing" secondItem="vmj-Rn-iAX" secondAttribute="trailing" id="vpw-kn-thK"/>
+                <constraint firstItem="vmj-Rn-iAX" firstAttribute="leading" secondItem="iMD-67-cge" secondAttribute="leading" id="z0q-uU-Fem"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="84h-gb-1I0"/>
+            <size key="customSize" width="367" height="242"/>
+            <connections>
+                <outlet property="containerView" destination="vmj-Rn-iAX" id="Cx4-sY-A3M"/>
+                <outlet property="imageView" destination="riA-xa-JSd" id="F5P-Fw-DI6"/>
+                <outlet property="nameLabel" destination="xgy-Nc-TyM" id="YIT-Fc-oSV"/>
+                <outlet property="ratingView" destination="TeY-bC-inj" id="Wla-XU-oDf"/>
+            </connections>
+            <point key="canvasLocation" x="29.5" y="113.5"/>
+        </collectionViewCell>
+    </objects>
+</document>
