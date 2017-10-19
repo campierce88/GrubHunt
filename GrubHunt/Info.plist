@@ -24,7 +24,15 @@
 	<string>In order to find the businesses
 you are looking for near you,
 please allow location services.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>In order to find the businesses
+you are looking for near you,
+please allow location services.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>In order to find the businesses
+you are looking for near you,
+please allow location services.</string>
+	<key>NSLocationUsageDescription</key>
 	<string>In order to find the businesses
 you are looking for near you,
 please allow location services.</string>
