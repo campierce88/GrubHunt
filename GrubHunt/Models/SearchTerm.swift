@@ -21,4 +21,5 @@ extension SearchTerm {
     
     @NSManaged public var term: String?
     @NSManaged public var totalResults: Int64
+    @NSManaged public var coordinates: Coordinates?
 }

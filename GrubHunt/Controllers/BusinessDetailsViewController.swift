@@ -18,6 +18,7 @@ class BusinessDetailsViewController: UIViewController {
         let storyboard = UIStoryboard.init(name: "Main", bundle: nil)
         let viewController = storyboard.instantiateViewController(withIdentifier: identifier) as! BusinessDetailsViewController
         viewController.business = business
+        viewController.title = business.name ?? ""
         return viewController
     }
 
@@ -91,7 +92,7 @@ extension BusinessDetailsViewController: UITableViewDelegate {
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: ReviewTableViewHeader.identifier) as? ReviewTableViewHeader, section == 0 else {
             return UITableViewHeaderFooterView()
         }
-        headerView.setup(with: business)
+        headerView.setup(with: business, andDelegate: self)
         return headerView
     }
 
@@ -105,5 +106,12 @@ extension BusinessDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Do nothing for now. Ideally given more time this would take you to a detailed view of the raiting
+    }
+}
+
+extension BusinessDetailsViewController: ReviewTableViewHeaderDelegate {
+
+    internal var navController: UINavigationController? {
+        return navigationController
     }
 }

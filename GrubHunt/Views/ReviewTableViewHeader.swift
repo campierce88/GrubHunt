@@ -7,8 +7,13 @@
 //
 
 import UIKit
+import MapKit
 import SDWebImage
 import HCSStarRatingView
+
+protocol ReviewTableViewHeaderDelegate: class {
+    var navController: UINavigationController? { get }
+}
 
 class ReviewTableViewHeader: UITableViewHeaderFooterView {
 
@@ -19,10 +24,17 @@ class ReviewTableViewHeader: UITableViewHeaderFooterView {
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var nameLabel: UILabel!
     @IBOutlet weak var ratingView: HCSStarRatingView!
+    @IBOutlet weak var numReviewsLabel: UILabel!
+    @IBOutlet weak var priceLabel: UILabel!
+    @IBOutlet weak var categoryLabel: UILabel!
+    @IBOutlet weak var addressLabel: UILabel!
+    @IBOutlet weak var addressButton: UIButton!
+    @IBOutlet weak var addressCell: UIView!
     @IBOutlet weak var imagesCollectionView: UICollectionView!
     @IBOutlet weak var backButton: UIButton!
     @IBOutlet weak var nextButton: UIButton!
 
+    weak var delegate: ReviewTableViewHeaderDelegate?
     var business: Business!
     var lastOrientation: UIDeviceOrientation? = nil
 
@@ -52,16 +64,75 @@ class ReviewTableViewHeader: UITableViewHeaderFooterView {
 
         updateButtons(for: 0)
     }
+    
+    override func prepareForReuse() {
+        nameLabel.text = nil
+        ratingView.value = 0
+        numReviewsLabel.text = nil
+        priceLabel.attributedText = nil
+        categoryLabel.text = nil
+        addressLabel.attributedText = nil
+    }
 
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
 
-    func setup(with business: Business) {
+    func setup(with business: Business, andDelegate delegate: ReviewTableViewHeaderDelegate? = nil) {
         self.business = business
+        self.delegate = delegate
 
         nameLabel.text = business.name
         ratingView.value = CGFloat(business.rating)
+        numReviewsLabel.text = (business.reviewCount == 0) ? nil : "(\(business.reviewCount) reviews)"
+
+        if let price = business.price, price.count > 0 && price.count < 5 {
+            let attributedString = NSMutableAttributedString(string: price, attributes: [NSAttributedStringKey.foregroundColor: UIColor.black])
+            priceLabel.text = price
+            let charactersLeft = 4 - price.count
+            for _ in 0 ..< charactersLeft {
+                attributedString.append(NSAttributedString(string: "$", attributes: [NSAttributedStringKey.foregroundColor: UIColor.lightGray]))
+            }
+            priceLabel.attributedText = attributedString
+        } else {
+            priceLabel.attributedText = nil
+        }
+
+        categoryLabel.text = ""
+        for element in business.categories.allObjects {
+            guard let category = element as? Category, let title = category.title, !title.isEmpty else { continue }
+            if categoryLabel.text!.isEmpty {
+                categoryLabel.text = categoryLabel.text! + "\(title)"
+            } else {
+                categoryLabel.text = categoryLabel.text! + ", \(title)"
+            }
+        }
+
+        if let _ = business.coordinates {
+            var addressString = ""
+            let address = business.address
+            if let line1 = address?.addressLine1 {
+                addressString = line1
+                if let city = address?.city {
+                    addressString.append(", \(city)")
+                }
+                if let state = address?.state {
+                    addressString.append(", \(state)")
+                }
+                if let zipcode = address?.zipCode {
+                    addressString.append(" \(zipcode)")
+                }
+            } else {
+                let businessName = (business.name != nil) ? "to \(business.name!)" : ""
+                addressString = "Get Directions \(businessName)"
+            }
+            addressLabel.attributedText = NSMutableAttributedString(string: addressString, attributes: [NSAttributedStringKey.foregroundColor: UIColor.blue, NSAttributedStringKey.underlineStyle: NSUnderlineStyle.styleSingle.rawValue])
+            addressCell.isHidden = false
+        } else {
+            addressLabel.attributedText = nil
+            addressCell.isHidden = true
+        }
+
         updateButtons(for: 0)
         imagesCollectionView.reloadData()
     }
@@ -73,7 +144,67 @@ class ReviewTableViewHeader: UITableViewHeaderFooterView {
         nextButton.isEnabled = (page < photos.count - 1)
         nextButton.tintColor = (nextButton.isEnabled) ? .black : .lightGray
     }
-
+    
+    @IBAction func addressButtonPressed(_ sender: Any) {
+        guard let coordinates = business.coordinates, let delegate = delegate, let navController = delegate.navController else { return }
+        let addressName = business.name ?? ""
+        let alert = UIAlertController(title: "Directions to \(addressName)", message: nil, preferredStyle: .actionSheet)
+        
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        alert.addAction(cancel)
+        
+        let google = UIAlertAction(title: "Google Maps", style: .default) { _ in
+            // Access to Google Maps
+            if let url = URL(string: "comgooglemaps-x-callback://"), UIApplication.shared.canOpenURL(url) {
+                // Google Maps is installed. Launch Google Maps and start navigation
+                let directionsRequest = "comgooglemaps://?daddr=\(coordinates.latitude),\(coordinates.longitude)" + "&x-success=sourceapp://?resume=true&x-source=AirApp"
+                if let directionsURL = URL(string: directionsRequest) {
+                    UIApplication.shared.open(directionsURL, options: [:], completionHandler: nil)
+                }
+            } else {
+                // Google Maps is not installed. Launch AppStore to install Waze app
+                if let appstoreUrl = URL(string: "http://itunes.apple.com/us/app/id585027354") {
+                    UIApplication.shared.open(appstoreUrl, options: [:], completionHandler: nil)
+                }
+            }
+        }
+        alert.addAction(google)
+        
+        let apple = UIAlertAction(title: "Apple Maps", style: .default) { _ in
+            let regionDistance:CLLocationDistance = 10000
+            let coords = CLLocationCoordinate2DMake(CLLocationDegrees(coordinates.latitude), CLLocationDegrees(coordinates.longitude))
+            let regionSpan = MKCoordinateRegionMakeWithDistance(coords, regionDistance, regionDistance)
+            let options = [
+                MKLaunchOptionsMapCenterKey: NSValue(mkCoordinate: regionSpan.center),
+                MKLaunchOptionsMapSpanKey: NSValue(mkCoordinateSpan: regionSpan.span)
+            ]
+            let placemark = MKPlacemark(coordinate: coords, addressDictionary: nil)
+            let mapItem = MKMapItem(placemark: placemark)
+            mapItem.name = addressName
+            mapItem.openInMaps(launchOptions: options)
+        }
+        alert.addAction(apple)
+        
+        let waze = UIAlertAction(title: "Waze", style: .default) { _ in
+            // Access to Waze
+            if let url = URL(string: "waze://"), UIApplication.shared.canOpenURL(url) {
+                // Waze is installed. Launch Waze and start navigation
+                let directionsRequest = "waze://?ll=\(coordinates.latitude),\(coordinates.longitude)&navigate=yes"
+                if let directionsURL = URL(string: directionsRequest) {
+                    UIApplication.shared.open(directionsURL, options: [:], completionHandler: nil)
+                }
+            } else {
+                // Waze is not installed. Launch AppStore to install Waze app
+                if let appstoreUrl = URL(string: "http://itunes.apple.com/us/app/id323229106") {
+                    UIApplication.shared.open(appstoreUrl, options: [:], completionHandler: nil)
+                }
+            }
+        }
+        alert.addAction(waze)
+        
+        navController.present(alert, animated: true, completion: nil)
+    }
+    
     @IBAction func backButtonPressed(_ sender: Any) {
         guard business != nil, let _ = business.photos else { return }
         let currentPage = Int(imagesCollectionView.contentOffset.x / imagesCollectionView.frame.width)
